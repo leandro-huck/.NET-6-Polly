@@ -7,13 +7,14 @@ namespace RequestService.Controller
     [ApiController]
     public class RequestController : ControllerBase
     {
-        private readonly ClientPolicy _clientPolicy;
+        //private readonly ClientPolicy _clientPolicy;
 
         private readonly IHttpClientFactory _clientFactory;
 
-        public RequestController(ClientPolicy clientPolicy, IHttpClientFactory clientFactory)
+        public RequestController(//ClientPolicy clientPolicy,
+            IHttpClientFactory clientFactory)
         {
-            _clientPolicy = clientPolicy;
+            //_clientPolicy = clientPolicy;
             _clientFactory = clientFactory;
         }
 
@@ -21,12 +22,12 @@ namespace RequestService.Controller
         [HttpGet]
         public async Task<ActionResult> MakeRequest()
         {
-            var client = _clientFactory.CreateClient();
+            var client = _clientFactory.CreateClient("Test");
 
-            //var response = await client.GetAsync("https://localhost:7155/api/v1/response/25");
+            var response = await client.GetAsync("https://localhost:7155/api/v1/response/25");
 
-            var response = await _clientPolicy.ExponentialHttpRetry.ExecuteAsync(
-                () => client.GetAsync("https://localhost:7155/api/v1/response/25"));
+            // var response = await _clientPolicy.ExponentialHttpRetry.ExecuteAsync(
+            //     () => client.GetAsync("https://localhost:7155/api/v1/response/25"));
 
             if (response.IsSuccessStatusCode)
             {
